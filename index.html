@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mikebalcic</title>
+<meta name="description" content="两份配置差在哪，只看该看的那部分。">
+<style>
+:root{
+  --bg:#0b0e14; --fg:#e6edf3; --muted:#8b949e; --line:#1f2630;
+  --card:#11161f; --accent:#7ee787; --accent2:#79c0ff;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#fbfbfa; --fg:#1a1a1a; --muted:#6b6b6b; --line:#e6e4e0;
+         --card:#ffffff; --accent:#1a7f37; --accent2:#0969da; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","PingFang SC",
+              "Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:16px; line-height:1.78; letter-spacing:.01em;
+}
+main{max-width:720px; margin:0 auto; padding:88px 24px 120px}
+h1,h2,h3{line-height:1.3; letter-spacing:-.01em}
+a{color:var(--accent2); text-decoration:none; border-bottom:1px solid transparent}
+a:hover{border-bottom-color:var(--accent2)}
+
+.hero{padding-bottom:44px; border-bottom:1px solid var(--line)}
+.eyebrow{margin:0 0 14px; font-size:13px; color:var(--muted);
+         letter-spacing:.14em; text-transform:uppercase}
+.hero h1{margin:0; font-size:40px; font-weight:650}
+.tagline{margin:16px 0 0; font-size:18px; color:var(--muted); max-width:34em}
+
+section{padding:44px 0; border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+h2{margin:0 0 22px; font-size:13px; font-weight:600; letter-spacing:.14em;
+   text-transform:uppercase; color:var(--muted)}
+
+.about p{margin:0 0 18px; font-size:17px}
+ul.traits{list-style:none; margin:0; padding:0; display:grid; gap:10px}
+ul.traits li{padding-left:20px; position:relative; color:var(--fg)}
+ul.traits li::before{content:""; position:absolute; left:2px; top:.72em;
+  width:7px; height:1px; background:var(--accent)}
+
+.grid{display:grid; gap:14px}
+@media(min-width:640px){ .grid.two{grid-template-columns:1fr 1fr} }
+.card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px}
+.card h3{margin:0 0 8px; font-size:17px; font-weight:600}
+.card p{margin:0; color:var(--muted); font-size:15px}
+.card .status{display:inline-block; margin-top:12px; font-size:12px;
+  color:var(--accent); letter-spacing:.06em}
+
+ul.repos{list-style:none; margin:0; padding:0}
+ul.repos li{padding:16px 0; border-bottom:1px dashed var(--line)}
+ul.repos li:last-child{border-bottom:0}
+ul.repos .name{font-weight:600}
+ul.repos .desc{color:var(--muted); font-size:15px; margin-top:2px}
+
+.tags{display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; list-style:none}
+.tags li{border:1px solid var(--line); border-radius:999px;
+  padding:6px 14px; font-size:14px; color:var(--muted)}
+
+ol.timeline{list-style:none; margin:0; padding:0 0 0 20px;
+  border-left:1px solid var(--line)}
+ol.timeline li{position:relative; padding:0 0 26px 20px}
+ol.timeline li:last-child{padding-bottom:0}
+ol.timeline li::before{content:""; position:absolute; left:-25px; top:.62em;
+  width:9px; height:9px; border-radius:50%; background:var(--bg);
+  border:1px solid var(--accent)}
+ol.timeline .when{display:block; font-size:12px; color:var(--muted);
+  letter-spacing:.08em; margin-bottom:2px}
+
+footer{padding-top:44px; border-top:1px solid var(--line); margin-top:44px}
+footer .mission{margin:0 0 10px; font-size:17px}
+footer .note{margin:0; color:var(--muted); font-size:14px}
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+  <p class="eyebrow">配置变更 · 噪声过滤</p>
+  <h1>mikebalcic</h1>
+  <p class="tagline">两份配置差在哪，只看该看的那部分。</p>
+</header>
+
+<section class="about" id="about">
+  <h2>关于</h2>
+  <p>我是 mikebalcic。我的日常是看配置：一份 YAML 从 staging 跑到 production 到底改了哪些项。 `diff` 给的是行，`confdiff` 给的是&quot;哪个配置项变了&quot;——这两件事之间的距离，就是我想填的空。 我把差异分成新增、删除、改动、空白四类，因为最后那类通常只是有人跑了格式化， 不该和真正的行为变更混在一起讲。我关心输出的可读性，因为这些结果常常要贴进 PR 描述给人看。</p>
+  <ul class="traits">
+    <li>用键路径说话：`db.pool.size` 比「第 42 行」有用得多。</li>
+    <li>格式变化单列一类，不和真实变更混在一起。</li>
+    <li>工具的解析范围刻意做窄，但会在 README 里说清楚窄在哪。</li>
+    <li>输出要能直接贴进 PR 描述，不要求读者二次加工。</li>
+  </ul>
+</section>
+
+<section id="research">
+  <h2>研究方向</h2>
+  <div class="grid two">
+    <article class="card">
+      <h3>配置漂移的检测</h3>
+      <p>怎么在部署前发现两个环境的配置已经悄悄分家？</p>
+      <span class="status">持续观察</span>
+    </article>
+    <article class="card">
+      <h3>YAML 的最小充分子集</h3>
+      <p>配置比对到底需要 YAML 的多少能力，剩下的能不能靠约定避免？</p>
+      <span class="status">在做工具</span>
+    </article>
+    <article class="card">
+      <h3>变更描述的可读性</h3>
+      <p>怎样让机器生成的变更摘要，一个人读完就知道该担心什么？</p>
+      <span class="status">长期关注</span>
+    </article>
+  </div>
+</section>
+
+<section id="work">
+  <h2>开源</h2>
+  <ul class="repos">
+    <li><div class="name">confdiff</div>
+      <div class="desc">把嵌套结构拍平成点号路径，JSON / YAML 子集 / .env / INI 通吃，噪音自动归类。</div>
+    </li>
+  </ul>
+</section>
+
+<section id="hobbies">
+  <h2>业余</h2>
+  <ul class="tags">
+    <li>把各环境的配置文件放在一个仓库里比对差异</li>
+    <li>整理部署前检查清单</li>
+    <li>读配置管理相关的故障复盘</li>
+  </ul>
+</section>
+
+<section id="timeline">
+  <h2>时间线</h2>
+  <ol class="timeline">
+    <li>
+      <span class="when">2026-10-21</span>
+      注册 GitHub 账号。
+    </li>
+    <li>
+      <span class="when">2026-10-25</span>
+      开源 confdiff，用于比对 JSON / YAML / .env / INI 配置并分级输出差异。
+    </li>
+  </ol>
+</section>
+
+<footer>
+  <p class="mission">让配置的每一次变化都能被一句准确的话描述清楚。</p>
+  <p class="note">这个页面在生长。每一次真实的提交都会被记下来。</p>
+</footer>
+
+</main>
+</body>
+</html>
